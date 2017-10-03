@@ -106,6 +106,10 @@ inoremap <C-k> <Esc>:m .-2<CR>==gi
 vnoremap <C-j> :m '>+1<CR>gv=gv
 vnoremap <C-k> :m '<-2<CR>gv=gv
 
+" Enable HOME/END in Command mode
+cnoremap <C-a> <home>
+cnoremap <C-e> <end>
+
 " Close buffer without destroying split
 command Bd bp\|bd \#
 
