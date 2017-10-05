@@ -20,13 +20,15 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#buffer_nr_format = '%s:'
 
 
-"Plug 'kien/ctrlp.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-nnoremap <Leader>a :Ag<Space>
+Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+nnoremap <Leader>a :Ag<CR>
 nnoremap <Leader>r :History:<CR>
-nnoremap <Leader>h :History<CR>
+nnoremap <Leader>y :History<CR>
 nnoremap <Leader>p :FZF<CR>
+" Enable history with <C-p>
+let g:fzf_history_dir=1
+" Magic to ignore filename matches https://github.com/junegunn/fzf.vim/issues/346#issuecomment-288483704
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 Plug 'terryma/vim-smooth-scroll'
 set scroll=15
