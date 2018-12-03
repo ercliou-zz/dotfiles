@@ -5,7 +5,17 @@ let maplocalleader = "\<space>"
 
 " Pluggin settings {{{
 call plug#begin('~/.local/share/nvim/plugged')
+Plug 'ercliou/potion.vim'
+
+" Git
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+
+Plug 'equalsraf/neovim-gui-shim'
+
+Plug 'simeji/winresizer'
+let g:winresizer_start_key = '<F4>'
+let g:winresizer_vert_resize = 3
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -19,6 +29,7 @@ let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#buffer_nr_format = '%s:'
 
+Plug 'blueyed/vim-diminactive'
 
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 nnoremap <Leader>a :Ag<CR>
@@ -70,16 +81,26 @@ let g:rainbow#colors = {
 \ }
 
 " Themes
-Plug 'roosta/srcery'
-Plug 'ayu-theme/ayu-vim'
+"Plug 'roosta/srcery'
+"Plug 'ayu-theme/ayu-vim'
 
 " Clojure
 Plug 'clojure-vim/acid.nvim'
-Plug 'tpope/vim-fireplace'
+"Plug 'clojure-vim/clj-refactor.nvim'
+"Plug 'tpope/vim-fireplace'
 Plug 'guns/vim-sexp'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sexp-mappings-for-regular-people'
+"Plug 'tpope/vim-surround'
+"Plug 'tpope/vim-repeat'
+"
+"Plug 'godlygeek/tabular'
+Plug 'junegunn/vim-easy-align'
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" Golang
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 
 call plug#end()
 " }}}
@@ -89,9 +110,39 @@ augroup play
   autocmd!
   autocmd FileType vim nnoremap <buffer> <Leader>c I" <Esc>
   autocmd FileType clojure iabbrev <buffer> try (try<CR><CR>(catch Exception e (prn e)))<up>
+  autocmd FileType clojure set lispwords+=facts,fact
 augroup end
 onoremap p i(
 onoremap in( :<C-U>normal! f(vi(
+
+" highlight trailingThings ctermfg=red
+" match trailingThings /\v\s+$/
+nnoremap <leader>ec :rightbelow vsplit ~/dev/vim-monokai/colors/monokai.vim<CR>
+
+nnoremap <F12> <C-w>hggdG<C-w>l
+
+" TODO
+" Different color for cursorline and status line
+" Permanent window for Ag
+" open VIMRC in existent split
+
+" Golang {{{
+
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_types = 1
+let g:go_auto_sameids = 1
+let g:go_auto_type_info = 1
+au FileType go set noexpandtab
+au FileType go set shiftwidth=4
+au FileType go set softtabstop=4
+au FileType go set tabstop=4
+" }}}
 
 " Navigation settings {{{
 " Navigate buffers
@@ -99,6 +150,20 @@ nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
 " Previous buffer
 nnoremap <BS> <C-^>
+
+" Windows
+tnoremap <C-A-h> <C-\><C-N><C-w>h
+tnoremap <C-A-j> <C-\><C-N><C-w>j
+tnoremap <C-A-k> <C-\><C-N><C-w>k
+tnoremap <C-A-l> <C-\><C-N><C-w>l
+inoremap <C-A-h> <C-\><C-N><C-w>h
+inoremap <C-A-j> <C-\><C-N><C-w>j
+inoremap <C-A-k> <C-\><C-N><C-w>k
+inoremap <C-A-l> <C-\><C-N><C-w>l
+nnoremap <C-A-h> <C-w>h
+nnoremap <C-A-j> <C-w>j
+nnoremap <C-A-k> <C-w>k
+nnoremap <C-A-l> <C-w>l
 
 " Move lines
 nnoremap <C-j> :m .+1<CR>==
@@ -118,6 +183,7 @@ command Bd bp\|bd \#
 " }}}
 
 " Basic settings {{{
+set inccommand=split
 set noswapfile
 set wildmenu
 set hidden
@@ -129,11 +195,38 @@ set scrolloff=3
 set sidescrolloff=5
 set mouse=a
 colorscheme monokai
+set pastetoggle=<F3>
+" Remove - as keyword, so I can move in kebab-case
+set iskeyword-=-
+set splitbelow
+set splitright
+
+" cursor line
+" lazyredraw so it lags only a bit :(
+"set lazyredraw
+" set cursorline
+"augroup CursorLine
+"  au!
+"  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+"  au WinLeave * setlocal nocursorline
+"augroup END
 
 " save my left fingers
 inoremap jk <esc>
-inoremap kj <esc>
+inoremap jj <esc>
 
+" substitute
+nnoremap <leader>ss :%s//gc<left><left><left>
+
+" save
+noremap <C-s> <esc>:w<CR>
+inoremap <C-s> <esc>:w<CR>
+
+" Lazy
+" nnoremap ; :
+
+" exit from :terminal
+tnoremap jk <C-\><C-n>
 
 " merge OS clipboard
 set clipboard=unnamed
@@ -151,7 +244,15 @@ set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
 syntax on
 filetype plugin indent on
+" show existing tab with 4 spaces width
+set tabstop=2
+" when indenting with '>', use 4 spaces width
+set shiftwidth=2
+" On pressing tab, insert 4 spaces
+set expandtab
 
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
 " }}}
 
 " VIMRC settings {{{
@@ -163,8 +264,10 @@ augroup reloadvimrc
 augroup end
 set foldlevelstart=0
 " easy VIMRC access
-nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+"nnoremap <leader>ev :rightbelow vsplit $MYVIMRC<CR>
+nnoremap <leader>ev <C-W>s<C-W>j<C-W>L:e $MYVIMRC<cr>
 nnoremap <leader>sv :so $MYVIMRC<CR>
+nnoremap <leader>eb <C-W>s<C-W>j<C-W>L:e ~/.bash_profile<cr>
 " }}}
 
 " Search settings {{{
@@ -176,6 +279,14 @@ set hlsearch
 set incsearch		" do incremental searching
 set ignorecase
 set smartcase
+nnoremap / /\v
+
+" Keep cursor in the middle of screen when searching for next
+" Also open fold if neccessary
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+nnoremap <Leader>F :execute "Ag " . expand("<cword>")<CR>
 " }}}
 
 " Don't use Ex mode, use Q for formatting
@@ -215,3 +326,4 @@ if has('langmap') && exists('+langnoremap')
   " compatible).
   set langnoremap
 endif
+
